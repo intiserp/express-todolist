@@ -9,43 +9,45 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.get("/", (req, res) => {
+const PORT = process.env.PORT || 4000;
+
+app.get("/api/", (req, res) => {
   res.send("Welcome ");
 });
 
-app.get("/getAllTodos", (req, res) => {
+app.get("/api/getAllTodos", (req, res) => {
   res.send(fakaTodoDatabase);
 });
 
-app.post("/addTodo", (req, res) => {
+app.post("/api/addTodo", (req, res) => {
   if (!fakaTodoDatabase[req.body.id]) {
     fakaTodoDatabase[req.body.id] = req.body;
-    res.send(`Todo added.`);
+    res.status(200).send(fakaTodoDatabase);
   } else {
-    res.send("Todo already exist");
+    res.status(400).send(fakaTodoDatabase);
   }
 });
 
-app.put("/updateTodo", (req, res) => {
+app.put("/api/updateTodo", (req, res) => {
   const todo = req.body;
   if (fakaTodoDatabase[todo.id]) {
     fakaTodoDatabase[todo.id] = todo;
-    res.send(`Updated DB`);
+    res.status(200).send(fakaTodoDatabase);
   } else {
-    res.send("No todo found with this id");
+    res.status(400).send(fakaTodoDatabase);
   }
 });
 
-app.delete("/deleteTodo/:id", (req, res) => {
+app.delete("/api/deleteTodo/:id", (req, res) => {
   const id = req.params.id;
   if (fakaTodoDatabase[id]) {
     delete fakaTodoDatabase[id];
-    res.send(`Deleted todo with id: ${id}`);
+    res.status(200).send(fakaTodoDatabase);
   } else {
-    res.send("No todo found with this id");
+    res.status(400).send(fakaTodoDatabase);
   }
 });
 
-app.listen(3000, () => {
-  console.log("Example app listening on port 3000!");
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
 });
